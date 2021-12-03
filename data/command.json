@@ -1,0 +1,72 @@
+{
+    "command": {
+      "help": {
+        "name": "help",
+        "syntax": "``help command``",
+        "description": "Returns list of commands or info on a specific command.",
+        "example": "``${PREFIX}help``, ``${PREFIX}help p``"
+      },
+      "p": {
+        "name": "p",
+        "syntax": "``p``, ``p id``",
+        "description": "Returns your points or someone elses.",
+        "example": "``${PREFIX}p``, ``${PREFIX}p @Elo Bot``"
+      },
+	  "register": {
+        "name": "register",
+        "syntax": "``register``, ``register your name#tag``",
+        "description": "Registers your in game name.",
+        "example": "``${PREFIX}register``, ``${PREFIX}register your name#tag``"
+      },
+	  "rank": {
+        "name": "rank",
+        "syntax": "``rank``",
+        "description": "Sets your rank.",
+        "example": "``${PREFIX}rank``"
+      },
+	  "j": {
+        "name": "j",
+        "syntax": "``j``",
+        "description": "Joins the match queue.",
+        "example": "``${PREFIX}j``"
+      },
+	  "l": {
+        "name": "l",
+        "syntax": "``l``",
+        "description": "Leaves the match queue.",
+        "example": "``${PREFIX}l``"
+      },
+	  "q": {
+        "name": "q",
+        "syntax": "``q``",
+        "description": "Returns the list of users currently in the match queue.",
+        "example": "``${PREFIX}q``"
+      }
+    },
+	"adminCommand": {
+	  "save": {
+        "name": "save",
+        "syntax": "save"
+	  },
+	  "load": {
+        "name": "load",
+        "syntax": "load"
+	  },
+	  "set": {
+        "name": "set",
+        "syntax": "set dollar/num ID int"
+	  },
+	  "add": {
+        "name": "add",
+        "syntax": "add dollar ID int"
+	  },
+	  "sub": {
+        "name": "sub",
+        "syntax": "sub dollar ID int"
+	  },
+	  "hhelp": {
+        "name": "hhelp",
+        "syntax": "hhelp"
+	  }
+	}
+  }
