@@ -23,10 +23,10 @@ function bufferFile(filePath) {
 const PREFIX = '-';
 const ROOT_DIR = path.resolve(__dirname, '..')
 //user data
-let userDataPath = `${ROOT_DIR}\\data\\user_data.json`;
+let userDataPath = `${ROOT_DIR}/data/user_data.json`;
 var userData = JSON.parse(bufferFile(userDataPath));
 //command data
-var commandData = JSON.parse((bufferFile(`${ROOT_DIR}\\data\\command.json`) + '').replaceAll('${PREFIX}', PREFIX));
+var commandData = JSON.parse((bufferFile(`${ROOT_DIR}/data/command.json`) + '').replaceAll('${PREFIX}', PREFIX));
 
 var mapList = ['Fracture', 'Breeze', 'Icebox', 'Bind', 'Haven', 'Split', 'Ascent'];
 var rankList = ['i1', 'i2', 'i3', 'b1', 'b2', 'b3', 's1', 's2', 's3', 'g1', 'g2', 'g3', 'p1', 'p2', 'p3', 'd1', 'd2', 'd3', 'imm1', 'imm2', 'imm3', 'r1'];
