@@ -40,7 +40,8 @@ var formatedRGB = [0, 75, 255];
 
 //loads from path
 function loadData() {
-    var userData = JSON.parse(bufferFile(userDataPath));
+    userData = JSON.parse(bufferFile(userDataPath));
+    console.log('Loaded.');
 }
 
 //saves user data
@@ -622,7 +623,7 @@ client.on('messageCreate', async (message) => {
             sendEmbed(message.channel, 'To set your rank, run the following command and choose from the options\n```-rank```', 'Rank Assign');
             return;
         }
-        else if ((inputs[0] == 'p') || (inputs[0] == 'points') || (inputs[0] == 'stats')) {
+        else if ((inputs[0] == 'p') || (inputs[0] == 'points') || (inputs[0] == 'stats') || (inputs[0] == 'elo') || (inputs[0] == 'mmr') || (inputs[0] == 'rr')) {
             //console.log('pp')
             var tempString2 = '';
             if (inputs[1]) {
