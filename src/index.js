@@ -41,27 +41,44 @@ var formatedRGB = [0, 75, 255];
 //loads from path
 function loadData() {
     userData = JSON.parse(bufferFile(userDataPath));
-    console.log('Loaded.');
+    console.log(userData);
 }
 
 //saves user data
-function saveData(url) {
-    if (url) {
-        request.get(url) 
-            .on('error', console.error)
-            .pipe(fs.createWriteStream(`${userDataPath}`));
-        
-        return;
-    }
-    console.log('Saving...');
-    //console.log(userData);
+saveData = async function(url) {
+    return new Promise(async function(resolve, reject) {
+        let returnMessage;
+        try {
+            if (url) {
+                let r = fs.createWriteStream(`${userDataPath}`);
+                request.get(url) 
+                    .on('error', console.error)
+                    .pipe(r);
 
-    fs.writeFile(userDataPath, JSON.stringify(userData, null, 2), (error) => {
-        console.error(error);
+                r.on('finish', function() {
+                    returnMessage = true;
+                    resolve(returnMessage);
+                });
+            }
+            else {
+                console.log('Saving...');
+                //console.log(userData);
+        
+                fs.writeFile(userDataPath, JSON.stringify(userData, null, 2), (error) => {
+                    console.error(error);
+                });
+                returnMessage = true;
+                resolve(returnMessage);
+                /*
+                userDataEditor.set(userData);
+                userDataEditor.save();*/
+            }
+            
+        }
+        catch(error) {
+            console.error(error);
+        }
     });
-    /*
-    userDataEditor.set(userData);
-    userDataEditor.save();*/
 }
 
 //Returns formatted date
@@ -424,7 +441,7 @@ client.on('interactionCreate', async interaction => {
                 userData[interaction.user.id].rank = args[1];
 
                 let richEmbed = new MessageEmbed();
-                //sendFormatted3(message.channel, 'Register', 'Your name has been set to ' + jsonobject.value[msg.author.id].ign + '.');
+                //sendFormatted3(message.channel, 'Register', 'Your name has been set to ' + jsonobject.value[message.author.id].ign + '.');
                 richEmbed.setDescription(`${userData[interaction.user.id].ign}\'s rank has been set to ${rankToFull(args[1])}. Setting an incorrect rank may lead to a ban. For a list of commands, type\`\`\`-help\`\`\``);
                 richEmbed.setColor(formatedRGB);
                 richEmbed.setTitle(interaction.message.embeds[0].title);
@@ -632,6 +649,7 @@ client.on('messageCreate', async (message) => {
                 }
                 else {
                     sendEmbed(message.channel, 'User has not registered.');
+                    return;
                 }
             }
             else {
@@ -639,7 +657,7 @@ client.on('messageCreate', async (message) => {
             }
 
             /*if (inputs[0] == 'pps') {
-                //msg.channel.send(tempString);
+                //message.channel.send(tempString);
                 tempString2 += tempString;
             }
             if (tempString2 != '') {
@@ -907,8 +925,10 @@ client.on('messageCreate', async (message) => {
             else if (inputs[0] == 'dl') {
                 if (inputs[1]) {
                     //message.channel.send((await message.channel.messages.fetch(inputs[1])).attachments[0]);
-                    saveData((await message.channel.messages.fetch(inputs[1])).attachments.first().url)
-                    loadData();
+                    saveData((await message.channel.messages.fetch(inputs[1])).attachments.first().url).then(() => {
+                        loadData();
+                    });
+                    
                 }
             }
             else if (inputs[0] == 'addRole') {
@@ -920,8 +940,8 @@ client.on('messageCreate', async (message) => {
                 (await message.guild.members.fetch(message.author.id)).roles.remove(team1vcRole);
             }
             else if (inputs[0] == 'load') {
-                jsonobject = JSON.parse(bufferFile('\currency.json'));
-                msg.channel.send('Loaded from file.');
+                loadData();
+                message.channel.send('Loaded from file.');
             }
             else if (inputs[0] == 'set') {
                 if (inputs[1] == 'pp') {
@@ -961,7 +981,7 @@ client.on('messageCreate', async (message) => {
                     if (inputs[3]) {
                         //getIdFromMsg
                         console.log('Subtracted ' + parseInt(inputs[3]) + ' pps from '  + userData[getIdFromMsg(inputs[2])].ign);
-                        msg.channel.send('Subtracted ' + parseInt(inputs[3]) + ' pps from '  + userData[getIdFromMsg(inputs[2])].ign);
+                        message.channel.send('Subtracted ' + parseInt(inputs[3]) + ' pps from '  + userData[getIdFromMsg(inputs[2])].ign);
                         userData[getIdFromMsg(inputs[2])].pp -= parseInt(inputs[3]);
                     }
                 }
@@ -972,7 +992,7 @@ client.on('messageCreate', async (message) => {
                     if (inputs[4]) {
                         //$trn(0) pp(1) id1(2) id2(3) 50(4)
                         console.log('transferred ' + parseInt(inputs[4]) + ' pps from '  + userData[getIdFromMsg(inputs[2])].ign + ' to ' + userData[getIdFromMsg(inputs[3])].ign);
-                        msg.channel.send('transferred ' + parseInt(inputs[4]) + ' pps from '  + userData[getIdFromMsg(inputs[2])].ign + ' to ' + userData[getIdFromMsg(inputs[3])].ign);
+                        message.channel.send('transferred ' + parseInt(inputs[4]) + ' pps from '  + userData[getIdFromMsg(inputs[2])].ign + ' to ' + userData[getIdFromMsg(inputs[3])].ign);
                         userData[getIdFromMsg(inputs[2])].pp -= parseInt(inputs[4]);
                         userData[getIdFromMsg(inputs[3])].pp += parseInt(inputs[4]);
                         saveData();
@@ -998,7 +1018,7 @@ client.on('messageCreate', async (message) => {
                 for (var i = 0; i < Object.keys(commandData.adminCommand).length; i++) {
                     msgsend = msgsend + '\n    ' + commandData.adminCommand[Object.keys(commandData.adminCommand)[i]].name + ': ' + commandData.adminCommand[Object.keys(commandData.adminCommand)[i]].syntax;
                 }
-                msg.channel.send('```' + msgsend + '```');
+                message.channel.send('```' + msgsend + '```');
             }
         }
         console.log(userData[message.author.id]);
