@@ -906,7 +906,8 @@ client.on('messageCreate', async (message) => {
             else if (inputs[0] == 'dl') {
                 if (inputs[1]) {
                     //message.channel.send((await message.channel.messages.fetch(inputs[1])).attachments[0]);
-                    saveData((await message.channel.messages.fetch(inputs[1])).attachments.first().url).then(loadData());
+                    saveData((await message.channel.messages.fetch(inputs[1])).attachments.first().url)
+                    loadData();
                 }
             }
             else if (inputs[0] == 'addRole') {
@@ -931,7 +932,15 @@ client.on('messageCreate', async (message) => {
                         userData[getIdFromMsg(inputs[2])].pp = parseInt(inputs[3]);
                     }
                 }
-                saveData()
+                else if (inputs[1] == 'hp') {
+                    if (inputs[3]) {
+                        //getIdFromMsg
+                        console.log('Set ' + userData[getIdFromMsg(inputs[2])].ign + '\'s hp to ' + parseInt(inputs[3]));
+                        message.channel.send('Set ' + userData[getIdFromMsg(inputs[2])].ign + '\'s hp to ' + parseInt(inputs[3]));
+                        userData[getIdFromMsg(inputs[2])].hp = parseInt(inputs[3]);
+                    }
+                }
+                saveData();
             }
             else if (inputs[0] == 'add') {
                 if (inputs[1] == 'pp') {
@@ -943,7 +952,7 @@ client.on('messageCreate', async (message) => {
                         userData[getIdFromMsg(inputs[2])].pp += parseInt(inputs[3]);
                     }
                 }
-                saveData()
+                saveData();
             }
             else if (inputs[0] == 'sub') {
                 if (inputs[1] == 'pp') {
