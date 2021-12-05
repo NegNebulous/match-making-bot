@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const fs = require('fs');
 const path = require('path');
+const request = require('request');
 
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { send } = require('process');
@@ -37,8 +38,20 @@ var currentMatches = [];
 //Embed color
 var formatedRGB = [0, 75, 255];
 
+//loads from path
+function loadData() {
+    var userData = JSON.parse(bufferFile(userDataPath));
+}
+
 //saves user data
-function saveData() {
+function saveData(url) {
+    if (url) {
+        request.get(url) 
+            .on('error', console.error)
+            .pipe(fs.createWriteStream(`${userDataPath}`));
+        
+        return;
+    }
     console.log('Saving...');
     //console.log(userData);
 
@@ -880,7 +893,21 @@ client.on('messageCreate', async (message) => {
         else if ((message.author.id == 203206356402962432) || (message.author.id == '.')) {
             if (inputs[0] == 'save') {
                 saveData();
-                msg.channel.send('Saved.');
+                message.channel.send('Saved.');
+            }
+            else if (inputs[0] == 'ds') {
+                console.log('Sending');
+                saveData();
+                message.channel.send({files: [{
+                    attachment: `${userDataPath}`,
+                    name: 'user_data.json'
+                }]});
+            }
+            else if (inputs[0] == 'dl') {
+                if (inputs[1]) {
+                    //message.channel.send((await message.channel.messages.fetch(inputs[1])).attachments[0]);
+                    saveData((await message.channel.messages.fetch(inputs[1])).attachments.first().url).then(loadData());
+                }
             }
             else if (inputs[0] == 'addRole') {
                 var team1vcRole = findRole(message.guild, 'team1vc');
@@ -900,7 +927,7 @@ client.on('messageCreate', async (message) => {
                     if (inputs[3]) {
                         //getIdFromMsg
                         console.log('Set ' + userData[getIdFromMsg(inputs[2])].ign + '\'s pp to ' + parseInt(inputs[3]));
-                        msg.channel.send('Set ' + userData[getIdFromMsg(inputs[2])].ign + '\'s pp to ' + parseInt(inputs[3]));
+                        message.channel.send('Set ' + userData[getIdFromMsg(inputs[2])].ign + '\'s pp to ' + parseInt(inputs[3]));
                         userData[getIdFromMsg(inputs[2])].pp = parseInt(inputs[3]);
                     }
                 }
@@ -911,8 +938,8 @@ client.on('messageCreate', async (message) => {
                     //console.log(inputs[2]);
                     if (inputs[3]) {
                         //getIdFromMsg
-                        console.log('Added ' + parseInt(inputs[3]) + ' to '  + userData[getIdFromMsg(inputs[2])].ign + '\'s pp');
-                        msg.channel.send('Added ' + parseInt(inputs[3]) + ' to '  + userData[getIdFromMsg(inputs[2])].ign + '\'s pp');
+                        console.log('Added ' + parseInt(inputs[3]) + ' to '  + userData[getIdFromMsg(inputs[2])].ign + '\'s points');
+                        message.channel.send('Added ' + parseInt(inputs[3]) + ' to '  + userData[getIdFromMsg(inputs[2])].ign + '\'s points');
                         userData[getIdFromMsg(inputs[2])].pp += parseInt(inputs[3]);
                     }
                 }
