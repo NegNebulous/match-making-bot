@@ -7,6 +7,7 @@ const request = require('request');
 
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { send } = require('process');
+const { get } = require('request');
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS]});
 
 client.login(process.env.DISCORD_BOT_TOKEN);
@@ -133,11 +134,15 @@ var sendEmbed = async function(channel, message, title, comp){
 }
 
 //returns a new embed
-var getEmbed = function(message, title){
+var getEmbed = function(message, title, comp){
     let richEmbed = new MessageEmbed();
     richEmbed.setDescription(message);
     richEmbed.setColor(formatedRGB);
-    if (title) {
+    if (comp) {
+        richEmbed.setTitle(title);
+        return {embeds: [richEmbed], components: comp};
+    }
+    else if (title) {
         richEmbed.setTitle(title);
     }
 
@@ -392,8 +397,8 @@ client.on('interactionCreate', async interaction => {
                             
                         }
                         else {
-                            (await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][0][i])).roles.remove(team1vcRole);
                             userData[currentMatches[currentMatches.length - 1][0][i]].hp += 1;
+                            (await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][0][i])).roles.remove(team1vcRole);
                             //(await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][1][i])).roles.remove(team1vcRole);
                         }
                     }
@@ -408,8 +413,8 @@ client.on('interactionCreate', async interaction => {
                             
                         }
                         else {
-                            (await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][1][i])).roles.remove(team2vcRole);
                             userData[currentMatches[currentMatches.length - 1][1][i]].hp += 1;
+                            (await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][1][i])).roles.remove(team2vcRole);
                         }
                     }
                     catch (e) {
@@ -423,6 +428,31 @@ client.on('interactionCreate', async interaction => {
                 interaction.update({embeds: [richEmbed], components: []});
                 //console.log('updates');
                 currentMatches.splice(matchIndex, 1);
+
+                //sort leaderboard
+
+                unordered = userData
+                let ordered = Object.keys(unordered).sort((function(valuea, valueb) {
+                    if (userData[valuea].pp > userData[valueb].pp) {
+                        return -1;
+                    }
+                    else if (userData[valuea].pp < userData[valueb].pp) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                })).reduce(
+                    (obj, key) => { 
+                        obj[key] = unordered[key]; 
+                        return obj;
+                    }, 
+                    {}
+                );
+
+                userData = ordered;
+
+                saveData();
 
                 return;
             }
@@ -442,7 +472,7 @@ client.on('interactionCreate', async interaction => {
 
                 let richEmbed = new MessageEmbed();
                 //sendFormatted3(message.channel, 'Register', 'Your name has been set to ' + jsonobject.value[message.author.id].ign + '.');
-                richEmbed.setDescription(`${userData[interaction.user.id].ign}\'s rank has been set to ${rankToFull(args[1])}. Setting an incorrect rank may lead to a ban. For a list of commands, type\`\`\`-help\`\`\``);
+                richEmbed.setDescription(`${userData[interaction.user.id].ign}\'s rank has been set to ${rankToFull(args[1])}. Setting an incorrect rank may lead to a ban. For a list of commands, type\`\`-help\`\`\n\nIf you\'re just trying to play, then join queue with \`\`\`-j\`\`\``);
                 richEmbed.setColor(formatedRGB);
                 richEmbed.setTitle(interaction.message.embeds[0].title);
 
@@ -505,7 +535,7 @@ client.on('messageCreate', async (message) => {
         if (inputs[0] == 'register') {
             //also used below this if statment
             let genericError = function() {
-                sendEmbed(message.channel, 'To register, run the following command where \"In Game Name#tag\" is your valorant user name and tag\n```-register In Game Name#tag```', 'Register');
+                sendEmbed(message.channel, 'To register, run the following command where \"In Game Name#tag\" is your valorant user name and tag.\n```-register In Game Name#tag```\nFor example ``-register 100T Asuna#1111``', 'Register');
             }
 
             if (inputs[1]) {
@@ -516,8 +546,49 @@ client.on('messageCreate', async (message) => {
 
                 if ((inGameName.length <= 24) && (inGameName.length >= 3)) {
                     userData[message.author.id].ign = inGameName;
-                    sendEmbed(message.channel, 'Your name has been set to ' + userData[message.author.id].ign, 'Register');
+                    rowList = []
+                    rowList.push(new MessageActionRow().addComponents(
+                        new MessageButton()
+                            .setCustomId(`${message.author.id} i Iron`)
+                            .setLabel('Iron')
+                            .setStyle('PRIMARY'),
+                        new MessageButton()
+                            .setCustomId(`${message.author.id} b Bronze`)
+                            .setLabel('Bronze')
+                            .setStyle('PRIMARY'),
+                        new MessageButton()
+                            .setCustomId(`${message.author.id} s Silver`)
+                            .setLabel('Silver')
+                            .setStyle('PRIMARY'),
+                        new MessageButton()
+                            .setCustomId(`${message.author.id} g Gold`)
+                            .setLabel('Gold')
+                            .setStyle('PRIMARY'),
+                        new MessageButton()
+                            .setCustomId(`${message.author.id} p Platinum`)
+                            .setLabel('Platinum')
+                            .setStyle('PRIMARY'),
+                    ));
+
+                    rowList.push(new MessageActionRow().addComponents(
+                        new MessageButton()
+                            .setCustomId(`${message.author.id} d Diamond`)
+                            .setLabel('Diamond')
+                            .setStyle('PRIMARY'),
+                        new MessageButton()
+                            .setCustomId(`${message.author.id} imm Immortal`)
+                            .setLabel('Immortal')
+                            .setStyle('PRIMARY'),
+                        new MessageButton()
+                            .setCustomId(`${message.author.id} r1 Radiant`)
+                            .setLabel('Radiant')
+                            .setStyle('PRIMARY'),
+                    ));
+                    
+                    //message.channel.send({content: 'Hola', components: [row]});
+                    message.reply(getEmbed('Your name has been set to ' + userData[message.author.id].ign + '. To set your rank, choose from the following options. Setting an incorrect rank may lead to a ban.', 'Rank Assign', rowList));
                     saveData();
+                    return;
                 }
                 else {
                     sendEmbed(message.channel, 'Your name must be between 3 and 24 characters', 'Register');
@@ -530,7 +601,7 @@ client.on('messageCreate', async (message) => {
             }
         }
         else if (userData[message.author.id].ign == '') {
-            sendEmbed(message.channel, 'To register, run the following command where \"In Game Name#tag\" is your valorant user name and tag\n```-register In Game Name#tag```', 'Register');
+            sendEmbed(message.channel, 'To register, run the following command where \"In Game Name#tag\" is your valorant user name and tag.\n```-register In Game Name#tag```\nFor example ``-register 100T Asuna#1111``', 'Register');
             return;
         }
 
@@ -624,7 +695,7 @@ client.on('messageCreate', async (message) => {
                     ));
                     
                     //message.channel.send({content: 'Hola', components: [row]});
-                    sendEmbed(message.channel, 'To set your rank, choose from the following options. Setting an incorrect rank may lead to a ban.', 'Rank Assign', rowList);
+                    message.reply(getEmbed('To set your rank, choose from the following options. Setting an incorrect rank may lead to a ban.', 'Rank Assign', rowList));
 
                 }
                 catch(error) {
@@ -689,7 +760,7 @@ client.on('messageCreate', async (message) => {
             if (currIndex == -1) {
                 var pingBreak = '';
                 if ((message.author.id == '203206356402962432') && (inputs[1])) {
-                    var testQueue = ['203206356402962432', '393406537621569536', '188833211823030272', '164629280519618560', '178287225245663232', '697272755397197834', '577668766540759060', '275059219479396372', '275059219479396000', '275059219479396001'];
+                    var testQueue = Object.keys(userData).slice(0, 10);
                     for (var i = 0;i<testQueue.length;i++) {
                         currentQueue.push(testQueue[i]);
                         sendEmbed(message.channel, userData[testQueue[i]].ign + ' has joined the queue: ' + currentQueue.length + '/10');
@@ -716,7 +787,7 @@ client.on('messageCreate', async (message) => {
                             highestElo = userData[currentQueue[i]].pp;
                             hostIdList[0] = currentQueue[i];
                         }
-                        preMessage += '<' + pingBreak + '@' + currentQueue[i] + '>';
+                        preMessage += '<' + pingBreak + '@' + currentQueue[i] + '> ';
                     }
 
                     //hostText = userData['203206356402962432'].ign;
@@ -724,7 +795,7 @@ client.on('messageCreate', async (message) => {
 
                     //console.log('2');
                     var currMap = mapList[parseInt(Math.random()*mapList.length)];
-                    var postMessage = 'Map: ' + currMap + '\n';
+                    var postMessage =  'Host: ' + hostText + '\n\nMap: ' + currMap + '\n';
                     var matchSide = [];
 
                     if (Math.random() > 0.5) {
@@ -746,7 +817,7 @@ client.on('messageCreate', async (message) => {
 
                     //sort
                     //var unSorted = true;
-                    var sortedQueue = [];
+                    /*var sortedQueue = [];
                     var remainingList = currentQueue;
                     while (remainingList.length > 0) {
                         var highestElo = 0;
@@ -763,7 +834,30 @@ client.on('messageCreate', async (message) => {
                         sortedQueue.push(highestId);
 
                     }
-                    currentQueue = sortedQueue;
+                    currentQueue = sortedQueue;*/
+                    /*var tempString = ''
+                    for (var i = 0;i<currentQueue.length;i++) {
+                        tempString += userData[currentQueue[i]].name + ' ' + userData[currentQueue[i]].rank + '\n'
+                    }
+                    message.channel.send(tempString);*/
+
+                    currentQueue.sort(function(valuea, valueb) {
+                        if (userData[valuea].pp/5 + rankToRR(userData[valuea].rank) > userData[valueb].pp/5 + rankToRR(userData[valueb].rank)) {
+                            return 1;
+                        }
+                        else if (userData[valuea].pp/5 + rankToRR(userData[valuea].rank) < userData[valueb].pp/5 + rankToRR(userData[valueb].rank)) {
+                            return -1;
+                        }
+                        else {
+                            return 0;
+                        }
+                    });
+                    
+                    /*var tempString = ''
+                    for (var i = 0;i<currentQueue.length;i++) {
+                        tempString += userData[currentQueue[i]].name + ' ' + userData[currentQueue[i]].rank + '\n'
+                    }
+                    message.channel.send(tempString);*/
 
                     //console.log('6');
                     //console.log(currentQueue);
@@ -830,7 +924,7 @@ client.on('messageCreate', async (message) => {
 
                     //console.log('7');
 
-                    postMessage += '\n\n' + 'Team 2 ' + matchSide[1] + ': ' + team2Text + '\n\nHost: ' + hostText;
+                    postMessage += '\n\n' + 'Team 2 ' + matchSide[1] + ': ' + team2Text;
 
                     //console.log(message.guild.channels.cache);
 
@@ -892,6 +986,13 @@ client.on('messageCreate', async (message) => {
                 sendEmbed(message.channel, 'Must be in queue to leave');
             }
         }
+        else if (inputs[0] == 'lb' || inputs[0] == 'leaderboard') {
+            let finalMsg = ''
+            for (var i = 0; i < 10; i++) {
+                finalMsg += `#${i+1} ${userData[Object.keys(userData)[i]].ign}: ${userData[Object.keys(userData)[i]].pp}\n`;
+            }
+            sendEmbed(message.channel, finalMsg, 'Leader Board');
+        }
         else if (inputs[0] == 'help') {
             if (!inputs[1]) {
                 var msgsend = 'For more detailed information on any commands type\n```-help command name```\n';
@@ -938,6 +1039,31 @@ client.on('messageCreate', async (message) => {
             else if (inputs[0] == 'removeRole') {
                 var team1vcRole = findRole(message.guild, 'team1vc');
                 (await message.guild.members.fetch(message.author.id)).roles.remove(team1vcRole);
+            }
+            else if (inputs[0] == 'sort') {
+
+                unordered = userData
+                let ordered = Object.keys(unordered).sort((function(valuea, valueb) {
+                    if (userData[valuea].pp > userData[valueb].pp) {
+                        return -1;
+                    }
+                    else if (userData[valuea].pp < userData[valueb].pp) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                })).reduce(
+                    (obj, key) => { 
+                        obj[key] = unordered[key]; 
+                        return obj;
+                    }, 
+                    {}
+                );
+
+                userData = ordered;
+
+                saveData();
             }
             else if (inputs[0] == 'load') {
                 loadData();
@@ -1010,7 +1136,7 @@ client.on('messageCreate', async (message) => {
                 }
             }
             else if (inputs[0] == 'aassign') {
-                userData[message.author.id].rank = parseInt(inputs[1]);
+                userData[message.author.id].rank = inputs[1];
             }
             else if (inputs[0] == 'hhelp') {
                 var msgsend = '';

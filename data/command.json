@@ -41,7 +41,13 @@
         "syntax": "``q``",
         "description": "Returns the list of users currently in the match queue.",
         "example": "``${PREFIX}q``"
-      }
+      },
+    "lb": {
+      "name": "lb",
+      "syntax": "``lb``",
+      "description": "Returns the top 10 players from the leaderboard.",
+      "example": "``${PREFIX}lb``"
+    }
     },
 	"adminCommand": {
 	  "save": {
