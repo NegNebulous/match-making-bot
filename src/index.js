@@ -13,7 +13,7 @@ const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_M
 client.login(process.env.DISCORD_BOT_TOKEN);
 client.on('ready', () => {
     console.log(`${client.user.tag} has logged in.`);
-    client.user.setPresence({ game: { name: '-help' }, status: 'online' })
+    client.user.setPresence({ activities: [{ name: '-help' }], status: 'online' });
 });
 
 //Reads a file and returns the file as a string
