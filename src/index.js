@@ -1021,7 +1021,7 @@ client.on('messageCreate', async (message) => {
         }
         else if (inputs[0] == 'lb' || inputs[0] == 'leaderboard') {
             let finalMsg = `#1${" \u200b".repeat(3)}${findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[0]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[0]].ign}: ${userData[Object.keys(userData)[0]].pp}\n`;
-            let lGap = (userData[Object.keys(userData)[0]].pp + '').length;
+            //let lGap = (userData[Object.keys(userData)[0]].pp + '').length;
             //console.log()
             //console.log(lGap);
             //console.log((userData[Object.keys(userData)[1]].pp + '').length);
@@ -1029,7 +1029,7 @@ client.on('messageCreate', async (message) => {
                 //console.log(findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[i]].rank).split(' ')[0])));
                 //${((i < 9) ? ' ' : '')}
                 //${userData[Object.keys(userData)[i]].pp}${" \u200b".repeat((lGap - (userData[Object.keys(userData)[i]].pp + '').length) + 1)}
-                let numSpaces = lGap - `${userData[Object.keys(userData)[i]].pp}`.length + 1;
+                //let numSpaces = lGap - `${userData[Object.keys(userData)[i]].pp}`.length + 1;
                 //console.log(numSpaces)
                 finalMsg += `#${i+1}${((i < 9) ? " \u200b".repeat(2) : ' ')}${findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[i]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[i]].ign}: ${userData[Object.keys(userData)[i]].pp}\n`;
             }
