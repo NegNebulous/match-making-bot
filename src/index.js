@@ -8,6 +8,7 @@ const request = require('request');
 const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { send } = require('process');
 const { get } = require('request');
+const { setEnvironmentData } = require('worker_threads');
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS]});
 
 client.login(process.env.DISCORD_BOT_TOKEN);
@@ -82,10 +83,56 @@ saveData = async function(url) {
     });
 }
 
+//sorts data
+async function sortData() {
+    let unordered = userData
+    let ordered = Object.keys(unordered).sort((function(valuea, valueb) {
+        if (userData[valuea].pp > userData[valueb].pp) {
+            return -1;
+        }
+        else if (userData[valuea].pp < userData[valueb].pp) {
+            return 1;
+        }
+        else {
+            if (rankToRR(userData[valuea].rank) > rankToRR(userData[valueb].rank)) {
+                return -1;
+            }
+            else if (rankToRR(userData[valuea].rank) < rankToRR(userData[valueb].rank)) {
+                return 1;
+            }
+            else {
+                if (userData[valuea].hp > userData[valueb].hp) {
+                    return -1;
+                }
+                else if (userData[valuea].hp < userData[valueb].hp) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            }
+        }
+    })).reduce(
+        (obj, key) => { 
+            obj[key] = unordered[key]; 
+            return obj;
+        }, 
+        {}
+    );
+
+    userData = ordered;
+
+    saveData();
+}
+
 //Returns formatted date
 function getFormattedDate() {
     let date = new Date();
     return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " +  date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();;
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 //Returns a new user object
@@ -110,6 +157,13 @@ var findRole = function (guild, name){
     var role = null;
     role = guild.roles.cache.find(val => val.name === name);
     return role;
+}
+
+//returns emoji
+var findEmoji = function (guild, name) {
+    var emoji = guild.emojis.cache.find(emoji => emoji.name === name);
+    //console.log(name);
+    return `<:${emoji.name}:${emoji.id}>`;
 }
 
 //Send discord embed
@@ -431,28 +485,7 @@ client.on('interactionCreate', async interaction => {
 
                 //sort leaderboard
 
-                unordered = userData
-                let ordered = Object.keys(unordered).sort((function(valuea, valueb) {
-                    if (userData[valuea].pp > userData[valueb].pp) {
-                        return -1;
-                    }
-                    else if (userData[valuea].pp < userData[valueb].pp) {
-                        return 1;
-                    }
-                    else {
-                        return 0;
-                    }
-                })).reduce(
-                    (obj, key) => { 
-                        obj[key] = unordered[key]; 
-                        return obj;
-                    }, 
-                    {}
-                );
-
-                userData = ordered;
-
-                saveData();
+                sortData();
 
                 return;
             }
@@ -987,9 +1020,18 @@ client.on('messageCreate', async (message) => {
             }
         }
         else if (inputs[0] == 'lb' || inputs[0] == 'leaderboard') {
-            let finalMsg = ''
-            for (var i = 0; i < 10; i++) {
-                finalMsg += `#${i+1} ${userData[Object.keys(userData)[i]].ign}: ${userData[Object.keys(userData)[i]].pp}\n`;
+            let finalMsg = `#1${" \u200b".repeat(3)}${findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[0]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[0]].ign}: ${userData[Object.keys(userData)[0]].pp}\n`;
+            let lGap = (userData[Object.keys(userData)[0]].pp + '').length;
+            //console.log()
+            //console.log(lGap);
+            //console.log((userData[Object.keys(userData)[1]].pp + '').length);
+            for (var i = 1; i < 10; i++) {
+                //console.log(findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[i]].rank).split(' ')[0])));
+                //${((i < 9) ? ' ' : '')}
+                //${userData[Object.keys(userData)[i]].pp}${" \u200b".repeat((lGap - (userData[Object.keys(userData)[i]].pp + '').length) + 1)}
+                let numSpaces = lGap - `${userData[Object.keys(userData)[i]].pp}`.length + 1;
+                //console.log(numSpaces)
+                finalMsg += `#${i+1}${((i < 9) ? " \u200b".repeat(2) : ' ')}${findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[i]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[i]].ign}: ${userData[Object.keys(userData)[i]].pp}\n`;
             }
             sendEmbed(message.channel, finalMsg, 'Leader Board');
         }
@@ -1041,29 +1083,7 @@ client.on('messageCreate', async (message) => {
                 (await message.guild.members.fetch(message.author.id)).roles.remove(team1vcRole);
             }
             else if (inputs[0] == 'sort') {
-
-                unordered = userData
-                let ordered = Object.keys(unordered).sort((function(valuea, valueb) {
-                    if (userData[valuea].pp > userData[valueb].pp) {
-                        return -1;
-                    }
-                    else if (userData[valuea].pp < userData[valueb].pp) {
-                        return 1;
-                    }
-                    else {
-                        return 0;
-                    }
-                })).reduce(
-                    (obj, key) => { 
-                        obj[key] = unordered[key]; 
-                        return obj;
-                    }, 
-                    {}
-                );
-
-                userData = ordered;
-
-                saveData();
+                sortData();
             }
             else if (inputs[0] == 'load') {
                 loadData();
@@ -1125,18 +1145,23 @@ client.on('messageCreate', async (message) => {
                     }
                 }
             }
-            else if (inputs[0] == 'distribute') {
-                //TODO
-                var numDistr = 0;
-                for (var i = 0; i < Object.keys(userData).length; i++) {
-                    //userData[Object.keys(userData)[i]]
-                    userData[Object.keys(userData)[i]].pp += userData[Object.keys(userData)[i]].livingCost;
-                    userData[Object.keys(userData)[i]].livingCost = 0;
-                    numDistr++;
-                }
+            else if (inputs[0] == 'rrank') {
+                userData[getIdFromMsg(inputs[1])].rank = inputs[2];
+                message.channel.send(`Set ${userData[getIdFromMsg(inputs[1])].ign}\'s rank to ${rankToFull(userData[getIdFromMsg(inputs[1])].rank)}`);
+                saveData();
             }
-            else if (inputs[0] == 'aassign') {
-                userData[message.author.id].rank = inputs[1];
+            else if (inputs[0] == 'iign') {
+                let original = userData[getIdFromMsg(inputs[1])].ign;
+                userData[getIdFromMsg(inputs[1])].ign = inputs[2];
+                message.channel.send(`Set ${original} to ${userData[getIdFromMsg(inputs[1])].ign}`);
+                saveData();
+            }
+            else if (inputs[0] == 'em') {
+                //<:${temp.name}:${temp.id}>
+                message.channel.send(`${findEmoji(message.guild, inputs[1])}`);
+            }
+            else if (inputs[0] == 'test') {
+                message.channel.send(`h${' '} h`);
             }
             else if (inputs[0] == 'hhelp') {
                 var msgsend = '';
