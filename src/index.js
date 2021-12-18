@@ -552,6 +552,10 @@ client.on('messageCreate', async (message) => {
         return;
     }
 
+    if (message.channel.name == 'general') {
+        return;
+    }
+
     if (!message.content.startsWith(PREFIX)) {
         return;
     }
