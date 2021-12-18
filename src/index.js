@@ -84,7 +84,7 @@ saveData = async function(url) {
 }
 
 //sorts data
-async function sortData() {
+var sortData = async function() {
     let unordered = userData
     let ordered = Object.keys(unordered).sort((function(valuea, valueb) {
         if (userData[valuea].pp > userData[valueb].pp) {
@@ -554,7 +554,7 @@ client.on('messageCreate', async (message) => {
     console.log(message.content);
     console.log(userData[message.author.id]);
 
-    var inputs = message.content.substring(1).split(' ');
+    var inputs = message.content.substring(PREFIX.length).split(' ');
 
     try {
         if (!userData[message.author.id]) {
@@ -579,6 +579,11 @@ client.on('messageCreate', async (message) => {
 
                 if ((inGameName.length <= 24) && (inGameName.length >= 3)) {
                     userData[message.author.id].ign = inGameName;
+                    if (userData[message.author.id].rank != 0) {
+                        message.reply({embeds: [getEmbed(`Your name has been set to ${userData[message.author.id].ign}`, 'Register')]});
+                        saveData();
+                        return;
+                    }
                     rowList = []
                     rowList.push(new MessageActionRow().addComponents(
                         new MessageButton()
@@ -817,7 +822,7 @@ client.on('messageCreate', async (message) => {
                     for (var i = 0;i<currentQueue.length;i++) {
                         if (userData[currentQueue[i]].hp > highestElo) {
                             hostText = userData[currentQueue[i]].ign;
-                            highestElo = userData[currentQueue[i]].pp;
+                            highestElo = userData[currentQueue[i]].hp;
                             hostIdList[0] = currentQueue[i];
                         }
                         preMessage += '<' + pingBreak + '@' + currentQueue[i] + '> ';
