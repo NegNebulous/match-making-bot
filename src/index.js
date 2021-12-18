@@ -26,8 +26,16 @@ function bufferFile(filePath) {
 const PREFIX = '-';
 const ROOT_DIR = path.resolve(__dirname, '..')
 //user data
-let userDataPath = `${ROOT_DIR}/data/user_data.json`;
-var userData = JSON.parse(bufferFile(userDataPath));
+var userDataPath;
+var userData;
+try {
+    userDataPath = `${ROOT_DIR}/data/user_data.json`;
+    userData = JSON.parse(bufferFile(userDataPath));
+}
+catch {
+    userData = new Object();
+    saveData();
+}
 //command data
 var commandData = JSON.parse((bufferFile(`${ROOT_DIR}/data/command.json`) + '').replaceAll('${PREFIX}', PREFIX));
 
