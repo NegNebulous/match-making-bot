@@ -34,7 +34,6 @@ try {
 }
 catch {
     userData = new Object();
-    saveData();
 }
 //command data
 var commandData = JSON.parse((bufferFile(`${ROOT_DIR}/data/command.json`) + '').replaceAll('${PREFIX}', PREFIX));
