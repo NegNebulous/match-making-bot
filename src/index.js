@@ -341,6 +341,127 @@ client.on('interactionCreate', async interaction => {
 
     let args = interaction.customId.split(' ');
 
+    if (args[0] == 'lb') {
+        //lb <user_id> <next/prev/get> <id/pgnum>
+
+        if (args[1] != interaction.user.id) {
+            return;
+        }
+
+        let pgNum;
+        let startNum;
+        let finalMsg;
+
+        if (args[2] == 'next') {
+            try {
+                pgNum = parseInt(args[3]) + 1;
+                startNum = pgNum*10;
+                finalMsg = `#${startNum+1} ${findEmoji(interaction.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[startNum]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[startNum]].ign}: ${userData[Object.keys(userData)[startNum]].pp}\n`;
+                //let lGap = (userData[Object.keys(userData)[0]].pp + '').length;
+                //console.log()
+                //console.log(lGap);
+                //console.log((userData[Object.keys(userData)[1]].pp + '').length);
+                for (var i = 1; i < 10; i++) {
+                    try {
+                        //console.log(findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[i]].rank).split(' ')[0])));
+                        //${((i < 9) ? ' ' : '')}
+                        //${userData[Object.keys(userData)[i]].pp}${" \u200b".repeat((lGap - (userData[Object.keys(userData)[i]].pp + '').length) + 1)}
+                        //let numSpaces = lGap - `${userData[Object.keys(userData)[i]].pp}`.length + 1;
+                        //console.log(numSpaces)
+                        finalMsg += `#${startNum+i+1} ${findEmoji(interaction.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[startNum+i]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[startNum+i]].ign}: ${userData[Object.keys(userData)[startNum+i]].pp}\n`;
+                    }
+                    catch(e) {
+
+                    }
+                }
+            }
+            catch {
+                pgNum -= 1;
+                finalMsg = interaction.message.embeds[0].description;
+            }
+        }
+        else if (args[2] == 'prev') {
+            try {
+                pgNum = parseInt(args[3]) - 1;
+                startNum = pgNum*10;
+                finalMsg = `#${startNum+1} ${findEmoji(interaction.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[startNum]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[startNum]].ign}: ${userData[Object.keys(userData)[startNum]].pp}\n`;
+                //let lGap = (userData[Object.keys(userData)[0]].pp + '').length;
+                //console.log()
+                //console.log(lGap);
+                //console.log((userData[Object.keys(userData)[1]].pp + '').length);
+                for (var i = 1; i < 10; i++) {
+                    try {
+                        //console.log(findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[i]].rank).split(' ')[0])));
+                        //${((i < 9) ? ' ' : '')}
+                        //${userData[Object.keys(userData)[i]].pp}${" \u200b".repeat((lGap - (userData[Object.keys(userData)[i]].pp + '').length) + 1)}
+                        //let numSpaces = lGap - `${userData[Object.keys(userData)[i]].pp}`.length + 1;
+                        //console.log(numSpaces)
+                        finalMsg += `#${startNum+i+1} ${findEmoji(interaction.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[startNum+i]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[startNum+i]].ign}: ${userData[Object.keys(userData)[startNum+i]].pp}\n`;
+                    }
+                    catch(e) {
+
+                    }
+                }
+            }
+            catch {
+                pgNum += 1;
+                finalMsg = interaction.message.embeds[0].description;
+            }
+        }
+        else if (args[2] == 'get') {
+            try {
+                pgNum = Math.floor(Object.keys(userData).indexOf(args[3]) / 10);
+                console.log(Object.keys(userData).indexOf(args[3]));
+                console.log(pgNum);
+                startNum = pgNum*10;
+                finalMsg = `#${startNum+1} ${findEmoji(interaction.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[startNum]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[startNum]].ign}: ${userData[Object.keys(userData)[startNum]].pp}\n`;
+                //let lGap = (userData[Object.keys(userData)[0]].pp + '').length;
+                //console.log()
+                //console.log(lGap);
+                //console.log((userData[Object.keys(userData)[1]].pp + '').length);
+                for (var i = 1; i < 10; i++) {
+                    try {
+                        //console.log(findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[i]].rank).split(' ')[0])));
+                        //${((i < 9) ? ' ' : '')}
+                        //${userData[Object.keys(userData)[i]].pp}${" \u200b".repeat((lGap - (userData[Object.keys(userData)[i]].pp + '').length) + 1)}
+                        //let numSpaces = lGap - `${userData[Object.keys(userData)[i]].pp}`.length + 1;
+                        //console.log(numSpaces)
+                        finalMsg += `#${startNum+i+1} ${findEmoji(interaction.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[startNum+i]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[startNum+i]].ign}: ${userData[Object.keys(userData)[startNum+i]].pp}\n`;
+                    }
+                    catch(e) {
+
+                    }
+                }
+            }
+            catch(e) {
+                console.log(e);
+                pgNum = 0;
+                finalMsg = interaction.message.embeds[0].description;
+            }
+        }
+
+        let rowList = [];
+
+        rowList.push(new MessageActionRow().addComponents(
+            new MessageButton()
+                .setCustomId(`lb ${interaction.user.id} prev ${pgNum}`)
+                .setLabel(`<< Prev page`)
+                .setStyle('PRIMARY'),
+            new MessageButton()
+                .setCustomId(`lb ${interaction.user.id} next ${pgNum}`)
+                .setLabel(`>> Next page`)
+                .setStyle('PRIMARY'),
+            new MessageButton()
+                .setCustomId(`lb ${interaction.user.id} get ${interaction.user.id}`)
+                .setLabel(`My page`)
+                .setStyle('SUCCESS'),
+        ));
+
+        interaction.update({embeds: [getEmbed(finalMsg, interaction.message.embeds[0].title)], components: rowList});
+
+        return;
+    }
+
     if (args[0] == 'hostButton') {
         try {
             //console.log('1');
@@ -359,8 +480,42 @@ client.on('interactionCreate', async interaction => {
             }
 
             if ((args[1] == '3') && (isValid)) {
+
+                var team1vcRole = findRole(interaction.guild, 'team1vc');
+                var team2vcRole = findRole(interaction.guild, 'team2vc');
+                for (var i = 0;i < currentMatches[currentMatches.length - 1][0].length;i++) {
+                    try {
+                        if(team1vcRole === null){
+                            
+                        }
+                        else {
+                            userData[currentMatches[currentMatches.length - 1][0][i]].hp += 1;
+                            (await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][0][i])).roles.remove(team1vcRole);
+                            //(await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][1][i])).roles.remove(team1vcRole);
+                        }
+                    }
+                    catch (e) {
+                        //console.log(e);
+                    }
+                }
+    
+                for (var i = 0;i < currentMatches[currentMatches.length - 1][1].length;i++) {
+                    try {
+                        if(team2vcRole === null){
+                            
+                        }
+                        else {
+                            userData[currentMatches[currentMatches.length - 1][1][i]].hp += 1;
+                            (await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][1][i])).roles.remove(team2vcRole);
+                        }
+                    }
+                    catch (e) {
+                        //console.log(e);
+                    }
+                }
+
                 currentMatches.splice(matchIndex, 1);
-                interaction.update({embeds: [getEmbed('Match has been cancled', interaction.message.embeds[0].title)], components: []});
+                interaction.update({embeds: [getEmbed('Match has been canceled', interaction.message.embeds[0].title)], components: []});
                 return;
             }
 
@@ -375,7 +530,7 @@ client.on('interactionCreate', async interaction => {
                 
                 finalMessage = 'Map: ' + cMatch[2][2] + '\n';
     
-                finalMessage += '\nTeam 1: ';
+                /*finalMessage += '\nTeam 1: ';
     
                 for (var i = 0;i < cMatch[0].length; i++) {
                     finalMessage += userData[cMatch[0][i]].ign + ' ';
@@ -386,7 +541,7 @@ client.on('interactionCreate', async interaction => {
     
                 for (var i = 0;i < cMatch[1].length; i++) {
                     finalMessage += userData[cMatch[1][i]].ign + ' ';
-                }
+                }*/
     
                 if (args[1] == '1') {
                     console.log('team 1 wins');
@@ -493,6 +648,13 @@ client.on('interactionCreate', async interaction => {
                 //sort leaderboard
 
                 sortData();
+
+                console.log('Sending');
+                saveData();
+                interaction.guild.channels.cache.get('920472848462655508').send({files: [{
+                    attachment: `${userDataPath}`,
+                    name: 'user_data.json'
+                }]});
 
                 return;
             }
@@ -911,10 +1073,70 @@ client.on('messageCreate', async (message) => {
                     //console.log('6');
                     //console.log(currentQueue);
 
-                    //make teams
+                    //make teams team balance match making
                     var whiteSpace = ' ';
                     currentMatches.push([[],[]]);
-                    for (var i = 0;i<(currentQueue.length/2);i++) {
+
+                    let team1List = [];
+                    let team2List = [];
+                    let balVal = 10000
+
+                    let t1Valf;
+                    let t2Valf;
+
+                    //https://planetcalc.com/8538/ 126 different possible combinations
+                    for (var i = 0; i<125;i++) {
+                        try {
+                            let tempList = currentQueue.slice(0, 10);
+                            let tempt1 = [];
+                            let tempt2 = [];
+
+                            let t1Val = 0;
+                            let t2Val = 0;
+
+                            for (var j = 0; j <5;j++) {
+                                let randI = parseInt(Math.random()*tempList.length);
+                                tempt1.push(tempList[randI]);
+                                t1Val += rankToRR(userData[tempList[randI]].rank) + userData[tempList[randI]].pp/10;
+                                tempList.splice(randI, 1);
+                            }
+                            for (var j = 0; j <5;j++) {
+                                let randI = parseInt(Math.random()*tempList.length);
+                                tempt2.push(tempList[randI]);
+                                t2Val += rankToRR(userData[tempList[randI]].rank) + userData[tempList[randI]].pp/10;
+                                tempList.splice(randI, 1);
+                            }
+
+                            if (Math.abs(t1Val - t2Val)/10 < balVal) {
+                                team1List = tempt1;
+                                team2List = tempt2;
+                                balVal = Math.abs(t1Val - t2Val)/10
+
+                                t1Valf = t1Val;
+                                t2Valf = t2Val;
+
+                                console.log(balVal);
+                            }
+                        }
+                        catch(e) {
+                            //console.log(e);
+                        }
+                    }
+
+                    let tempmsg = `Team1 ${t1Valf}\n`;
+                    for (var i = 0; i < team1List.length; i++) {
+                        tempmsg += `${findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[team1List[i]].rank).split(' ')[0]))} ${userData[team1List[i]].ign} ${rankToRR(userData[team1List[i]].rank) + userData[team1List[i]].pp/10}\n`;
+                        postMessage += userData[team1List[i]].ign + whiteSpace;
+                    }
+                    tempmsg += `\nTeam2 ${t2Valf}\n`;
+                    for (var i = 0; i < team2List.length; i++) {
+                        tempmsg += `${findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[team2List[i]].rank).split(' ')[0]))} ${userData[team2List[i]].ign} ${rankToRR(userData[team2List[i]].rank) + userData[team2List[i]].pp/10}\n`;
+                        team2Text += userData[team2List[i]].ign + whiteSpace;
+                    }
+
+                    //message.channel.send(tempmsg);
+
+                    /*for (var i = 0;i<(currentQueue.length/2);i++) {
                         if (i == 4) {
                             currentMatches[currentMatches.length-1][1].push(currentQueue[i]);
                             currentMatches[currentMatches.length-1][0].push(currentQueue[currentQueue.length-i-1]);
@@ -938,7 +1160,7 @@ client.on('messageCreate', async (message) => {
                             team2Text += userData[currentQueue[i]].ign + whiteSpace;
                             team2Text += userData[currentQueue[currentQueue.length-i-1]].ign + whiteSpace;
                         }
-                    }
+                    }*/
 
                     //give roles
                     var team1vcRole = findRole(message.guild, 'team1vc');
@@ -1049,7 +1271,25 @@ client.on('messageCreate', async (message) => {
                 //console.log(numSpaces)
                 finalMsg += `#${i+1}${((i < 9) ? " \u200b".repeat(2) : ' ')}${findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[i]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[i]].ign}: ${userData[Object.keys(userData)[i]].pp}\n`;
             }
-            sendEmbed(message.channel, finalMsg, 'Leader Board');
+
+            let rowList = [];
+
+                rowList.push(new MessageActionRow().addComponents(
+                    new MessageButton()
+                        .setCustomId(`lb ${message.author.id} prev 0`)
+                        .setLabel(`<< Prev page`)
+                        .setStyle('PRIMARY'),
+                    new MessageButton()
+                        .setCustomId(`lb ${message.author.id} next 0`)
+                        .setLabel(`>> Next page`)
+                        .setStyle('PRIMARY'),
+                    new MessageButton()
+                        .setCustomId(`lb ${message.author.id} get ${message.author.id}`)
+                        .setLabel(`My page`)
+                        .setStyle('SUCCESS'),
+                ));
+
+            message.reply({embeds: [getEmbed(finalMsg, 'Leader Board')], components: rowList});
         }
         else if (inputs[0] == 'help') {
             if (!inputs[1]) {
@@ -1100,6 +1340,7 @@ client.on('messageCreate', async (message) => {
             }
             else if (inputs[0] == 'sort') {
                 sortData();
+                message.channel.send(`Sorted`);
             }
             else if (inputs[0] == 'load') {
                 loadData();
@@ -1178,6 +1419,13 @@ client.on('messageCreate', async (message) => {
             }
             else if (inputs[0] == 'test') {
                 message.channel.send(`h${' '} h`);
+            }
+            else if (inputs[0] == 'qrm') {
+                if (currentQueue.indexOf(getIdFromMsg(inputs[1])) == -1) {
+                    message.channel.send('User not in queue');
+                }
+                currentQueue.splice(currentQueue.indexOf(getIdFromMsg(inputs[1])));
+                message.channel.send(`Removed ${userData[getIdFromMsg(inputs[1])].ign} from queue`);
             }
             else if (inputs[0] == 'hhelp') {
                 var msgsend = '';
