@@ -9,7 +9,7 @@ const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = requi
 const { send } = require('process');
 const { get } = require('request');
 const { setEnvironmentData } = require('worker_threads');
-const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS]});
+const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS]});
 
 client.login(process.env.DISCORD_BOT_TOKEN);
 client.on('ready', () => {
@@ -91,7 +91,7 @@ saveData = async function(url) {
 }
 
 //sorts data
-var sortData = async function() {
+var sortData = function() {
     let unordered = userData
     let ordered = Object.keys(unordered).sort((function(valuea, valueb) {
         if (userData[valuea].pp > userData[valueb].pp) {
@@ -128,8 +128,6 @@ var sortData = async function() {
     );
 
     userData = ordered;
-
-    saveData();
 }
 
 //Returns formatted date
@@ -334,6 +332,14 @@ function getIdFromMsg(message) {
     return message.substring(tempIntI1, tempIntI2);
 }
 
+client.on('guildMemberAdd', async member => {
+    //console.log('h');
+    try {
+        member.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'welcome').send(`Welcome to ${member.guild.name} <@${member.id}>\nTo join the customs type the following command in <#${member.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'register').id}> \`\`\`-register name#tag\`\`\``);
+    }
+    catch(e) {console.log(e);}
+});
+
 client.on('interactionCreate', async interaction => {
     if (!interaction.isButton()) {
         return;
@@ -528,7 +534,7 @@ client.on('interactionCreate', async interaction => {
     
                 var cMatch = currentMatches[matchIndex];
                 
-                finalMessage = 'Map: ' + cMatch[2][2] + '\n';
+                finalMessage = 'Map: ' + cMatch[2][2];
     
                 /*finalMessage += '\nTeam 1: ';
     
@@ -548,6 +554,8 @@ client.on('interactionCreate', async interaction => {
                     //team 1 wins
                     finalMessage += '\n\nWinner: Team 1\n\nTeam 1:\n';
     
+                    console.log(cMatch);
+
                     for (var i = 0;i < cMatch[0].length; i++) {
                         if (userData[cMatch[0][i]].wl < 0) {
                             userData[cMatch[0][i]].wl = 1;
@@ -603,58 +611,66 @@ client.on('interactionCreate', async interaction => {
                     }
                 }
     
+                try {
+                    var team1vcRole = findRole(interaction.guild, 'team1vc');
+                    var team2vcRole = findRole(interaction.guild, 'team2vc');
+                    for (var i = 0;i < currentMatches[currentMatches.length - 1][0].length;i++) {
+                        try {
+                            if(team1vcRole === null){
+                                
+                            }
+                            else {
+                                userData[currentMatches[currentMatches.length - 1][0][i]].hp += 1;
+                                (await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][0][i])).roles.remove(team1vcRole);
+                                //(await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][1][i])).roles.remove(team1vcRole);
+                            }
+                        }
+                        catch (e) {
+                            //console.log(e);
+                        }
+                    }
+        
+                    for (var i = 0;i < currentMatches[currentMatches.length - 1][1].length;i++) {
+                        try {
+                            if(team2vcRole === null){
+                                
+                            }
+                            else {
+                                userData[currentMatches[currentMatches.length - 1][1][i]].hp += 1;
+                                (await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][1][i])).roles.remove(team2vcRole);
+                            }
+                        }
+                        catch (e) {
+                            //console.log(e);
+                        }
+                    }
+        
+                    richEmbed.setDescription(finalMessage);
+                    richEmbed.setColor(formatedRGB);
+        
+                    interaction.update({embeds: [richEmbed], components: []});
+                    //console.log('updates');
+                    currentMatches.splice(matchIndex, 1);
+
+                    //sort leaderboard
+
+                    console.log('sorting...');
+                    sortData();
+                }
+                catch(e) {}
                 saveData();
-    
-                var team1vcRole = findRole(interaction.guild, 'team1vc');
-                var team2vcRole = findRole(interaction.guild, 'team2vc');
-                for (var i = 0;i < currentMatches[currentMatches.length - 1][0].length;i++) {
-                    try {
-                        if(team1vcRole === null){
-                            
-                        }
-                        else {
-                            userData[currentMatches[currentMatches.length - 1][0][i]].hp += 1;
-                            (await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][0][i])).roles.remove(team1vcRole);
-                            //(await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][1][i])).roles.remove(team1vcRole);
-                        }
-                    }
-                    catch (e) {
-                        //console.log(e);
-                    }
-                }
-    
-                for (var i = 0;i < currentMatches[currentMatches.length - 1][1].length;i++) {
-                    try {
-                        if(team2vcRole === null){
-                            
-                        }
-                        else {
-                            userData[currentMatches[currentMatches.length - 1][1][i]].hp += 1;
-                            (await interaction.guild.members.fetch(currentMatches[currentMatches.length - 1][1][i])).roles.remove(team2vcRole);
-                        }
-                    }
-                    catch (e) {
-                        //console.log(e);
-                    }
-                }
-    
-                richEmbed.setDescription(finalMessage);
-                richEmbed.setColor(formatedRGB);
-    
-                interaction.update({embeds: [richEmbed], components: []});
-                //console.log('updates');
-                currentMatches.splice(matchIndex, 1);
-
-                //sort leaderboard
-
-                sortData();
 
                 console.log('Sending');
-                saveData();
-                interaction.guild.channels.cache.get('920472848462655508').send({files: [{
+
+                (await client.guilds.fetch('571780425211576330')).channels.cache.get('923750880673677373').send({files: [{
                     attachment: `${userDataPath}`,
                     name: 'user_data.json'
                 }]});
+                
+                /*interaction.guild.channels.cache.get('920472848462655508').send({files: [{
+                    attachment: `${userDataPath}`,
+                    name: 'user_data.json'
+                }]});*/
 
                 return;
             }
@@ -989,7 +1005,6 @@ client.on('messageCreate', async (message) => {
 
                     var hostText = '';
                     var hostIdList = [0];
-
                     var highestElo = -1;
 
                     for (var i = 0;i<currentQueue.length;i++) {
@@ -1006,6 +1021,9 @@ client.on('messageCreate', async (message) => {
 
                     //console.log('2');
                     var currMap = mapList[parseInt(Math.random()*mapList.length)];
+                    /*if (currMap == 'fracture') {
+                        currMap = mapList[parseInt(Math.random()*mapList.length)];
+                    }*/
                     var postMessage =  'Host: ' + hostText + '\n\nMap: ' + currMap + '\n';
                     var matchSide = [];
 
@@ -1127,11 +1145,13 @@ client.on('messageCreate', async (message) => {
                     for (var i = 0; i < team1List.length; i++) {
                         tempmsg += `${findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[team1List[i]].rank).split(' ')[0]))} ${userData[team1List[i]].ign} ${rankToRR(userData[team1List[i]].rank) + userData[team1List[i]].pp/10}\n`;
                         postMessage += userData[team1List[i]].ign + whiteSpace;
+                        currentMatches[currentMatches.length-1][0].push(team1List[i]);
                     }
                     tempmsg += `\nTeam2 ${t2Valf}\n`;
                     for (var i = 0; i < team2List.length; i++) {
                         tempmsg += `${findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[team2List[i]].rank).split(' ')[0]))} ${userData[team2List[i]].ign} ${rankToRR(userData[team2List[i]].rank) + userData[team2List[i]].pp/10}\n`;
                         team2Text += userData[team2List[i]].ign + whiteSpace;
+                        currentMatches[currentMatches.length-1][1].push(team2List[i]);
                     }
 
                     //message.channel.send(tempmsg);
@@ -1199,7 +1219,13 @@ client.on('messageCreate', async (message) => {
 
                     //console.log(message.guild.channels.cache);
 
-                    let channel = message.guild.channels.cache.get('912462766256844831');
+                    let channel = message.guild.channels.cache.find(channel => channel.name.length < 0);
+                    try {
+                        channel = message.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'matches');
+                    }
+                    catch(e) {
+                        console.log(e);
+                    }
 
                     let rowList = [];
 
@@ -1424,7 +1450,7 @@ client.on('messageCreate', async (message) => {
                 if (currentQueue.indexOf(getIdFromMsg(inputs[1])) == -1) {
                     message.channel.send('User not in queue');
                 }
-                currentQueue.splice(currentQueue.indexOf(getIdFromMsg(inputs[1])));
+                currentQueue.splice(currentQueue.indexOf(getIdFromMsg(inputs[1])), 1);
                 message.channel.send(`Removed ${userData[getIdFromMsg(inputs[1])].ign} from queue`);
             }
             else if (inputs[0] == 'hhelp') {

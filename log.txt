@@ -1,0 +1,494 @@
+
+C:\svoo\stuff\Code\js\match-making-bot>npm run start
+
+> match-making-bot@1.0.0 start
+> node ./src/index.js
+
+v16.13.0
+Elo Bot#3952 has logged in.
+
+2021-12-23 17:47:13
+-j
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+
+2021-12-23 17:47:20
+-l
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+
+2021-12-23 17:47:24
+-j
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+
+2021-12-23 17:47:26
+-j
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+
+2021-12-23 17:47:27
+-j
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+
+2021-12-23 17:47:28
+-j
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+
+2021-12-23 17:47:49
+-j
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+
+2021-12-23 17:50:28
+-l
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+{ ign: 'JINGLEBALLS#PAIN', pp: 1043, rank: 'p1', wl: 2, hp: 0 }
+
+2021-12-23 17:57:59
+-register
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+
+2021-12-23 17:58:32
+-rank
+{ ign: 'pinnow#NCAA', pp: 1072, rank: 'd3', wl: -2, hp: 1004 }
+{ ign: 'pinnow#NCAA', pp: 1072, rank: 'd3', wl: -2, hp: 1004 }
+Saving...
+null
+
+2021-12-23 17:58:48
+-stats
+{ ign: 'pinnow#NCAA', pp: 1072, rank: 'imm1', wl: -2, hp: 1004 }
+{ ign: 'pinnow#NCAA', pp: 1072, rank: 'imm1', wl: -2, hp: 1004 }
+
+2021-12-23 17:58:56
+-lb
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+
+2021-12-23 17:59:16
+-register
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+
+2021-12-23 17:59:28
+-register Ronnoc#0001
+undefined
+{ ign: '', pp: 1000, rank: 0, wl: 0, hp: 0 }
+Saving...
+Initializing user
+Saving...
+null
+null
+Saving...
+null
+
+2021-12-23 18:3:16
+-q
+{
+  ign: 'ballsackscrathcer#balls',
+  pp: 1066,
+  rank: 'imm1',
+  wl: 3,
+  hp: 3
+}
+{
+  ign: 'ballsackscrathcer#balls',
+  pp: 1066,
+  rank: 'imm1',
+  wl: 3,
+  hp: 3
+}
+
+2021-12-23 18:3:22
+-j
+{
+  ign: 'ballsackscrathcer#balls',
+  pp: 1066,
+  rank: 'imm1',
+  wl: 3,
+  hp: 3
+}
+{
+  ign: 'ballsackscrathcer#balls',
+  pp: 1066,
+  rank: 'imm1',
+  wl: 3,
+  hp: 3
+}
+
+2021-12-23 18:3:31
+-j
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+
+2021-12-23 18:3:36
+-j
+{ ign: 'pinnow#NCAA', pp: 1072, rank: 'imm1', wl: -2, hp: 1004 }
+{ ign: 'pinnow#NCAA', pp: 1072, rank: 'imm1', wl: -2, hp: 1004 }
+
+2021-12-23 18:3:42
+-j
+{
+  ign: 'AlonelyHentaiMan#TUYU',
+  pp: 907,
+  rank: 'imm2',
+  wl: -5,
+  hp: 1004
+}
+{
+  ign: 'AlonelyHentaiMan#TUYU',
+  pp: 907,
+  rank: 'imm2',
+  wl: -5,
+  hp: 1004
+}
+
+2021-12-23 18:3:43
+-j
+{ ign: 'LILphoenix#WOEM', pp: 1043, rank: 'imm3', wl: 2, hp: 4 }
+{ ign: 'LILphoenix#WOEM', pp: 1043, rank: 'imm3', wl: 2, hp: 4 }
+
+2021-12-23 18:3:56
+-register morT#4428
+undefined
+{ ign: '', pp: 1000, rank: 0, wl: 0, hp: 0 }
+Saving...
+Initializing user
+Saving...
+null
+null
+Saving...
+null
+
+2021-12-23 18:4:28
+-register GOOMBA#ProP
+undefined
+{ ign: '', pp: 1000, rank: 0, wl: 0, hp: 0 }
+Saving...
+Initializing user
+Saving...
+null
+null
+
+2021-12-23 18:4:36
+-j
+{ ign: 'Kaori Miyazono#Y LIA', pp: 957, rank: 'd1', wl: -2, hp: 2 }
+{ ign: 'Kaori Miyazono#Y LIA', pp: 957, rank: 'd1', wl: -2, hp: 2 }
+
+2021-12-23 18:4:43
+-l
+{ ign: 'Kaori Miyazono#Y LIA', pp: 957, rank: 'd1', wl: -2, hp: 2 }
+{ ign: 'Kaori Miyazono#Y LIA', pp: 957, rank: 'd1', wl: -2, hp: 2 }
+Saving...
+null
+
+2021-12-23 18:5:1
+-register
+undefined
+{ ign: '', pp: 1000, rank: 0, wl: 0, hp: 0 }
+Saving...
+Initializing user
+null
+
+2021-12-23 18:5:3
+-register
+undefined
+{ ign: '', pp: 1000, rank: 0, wl: 0, hp: 0 }
+Saving...
+Initializing user
+null
+
+2021-12-23 18:5:26
+-register eros#999
+{ ign: '', pp: 1000, rank: 0, wl: 0, hp: 0 }
+Saving...
+null
+Saving...
+null
+
+2021-12-23 18:5:35
+-register  TYBFlex#flex
+{ ign: '', pp: 1000, rank: 0, wl: 0, hp: 0 }
+
+2021-12-23 18:5:53
+-rank
+{
+  ign: 'ballsackscrathcer#balls',
+  pp: 1066,
+  rank: 'imm1',
+  wl: 3,
+  hp: 3
+}
+{
+  ign: 'ballsackscrathcer#balls',
+  pp: 1066,
+  rank: 'imm1',
+  wl: 3,
+  hp: 3
+}
+Saving...
+null
+
+2021-12-23 18:5:57
+-rank
+{ ign: 'eros#999', pp: 1000, rank: 'r1', wl: 0, hp: 0 }
+{ ign: 'eros#999', pp: 1000, rank: 'r1', wl: 0, hp: 0 }
+Saving...
+null
+
+2021-12-23 18:6:12
+-rankj
+{ ign: 'morT#4428', pp: 1000, rank: 'g3', wl: 0, hp: 0 }
+{ ign: 'morT#4428', pp: 1000, rank: 'g3', wl: 0, hp: 0 }
+
+2021-12-23 18:6:15
+-rank
+{ ign: 'morT#4428', pp: 1000, rank: 'g3', wl: 0, hp: 0 }
+{ ign: 'morT#4428', pp: 1000, rank: 'g3', wl: 0, hp: 0 }
+Saving...
+null
+
+2021-12-23 18:6:20
+-register Ryen#Flex
+{ ign: '', pp: 1000, rank: 0, wl: 0, hp: 0 }
+Saving...
+null
+
+2021-12-23 18:6:22
+-rank
+{ ign: 'morT#4428', pp: 1000, rank: 'i1', wl: 0, hp: 0 }
+{ ign: 'morT#4428', pp: 1000, rank: 'i1', wl: 0, hp: 0 }
+Saving...
+null
+Saving...
+null
+
+2021-12-23 18:6:36
+-j
+{ ign: 'Ronnoc#0001', pp: 1000, rank: 'imm3', wl: 0, hp: 0 }
+{ ign: 'Ronnoc#0001', pp: 1000, rank: 'imm3', wl: 0, hp: 0 }
+
+2021-12-23 18:6:37
+-j
+{ ign: 'morT#4428', pp: 1000, rank: 'g3', wl: 0, hp: 0 }
+{ ign: 'morT#4428', pp: 1000, rank: 'g3', wl: 0, hp: 0 }
+
+2021-12-23 18:6:40
+-j
+{ ign: 'eros#999', pp: 1000, rank: 's1', wl: 0, hp: 0 }
+{ ign: 'eros#999', pp: 1000, rank: 's1', wl: 0, hp: 0 }
+
+2021-12-23 18:6:40
+-q
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+
+2021-12-23 18:7:46
+-j
+{ ign: 'GOOMBA#ProP', pp: 1000, rank: 'd3', wl: 0, hp: 0 }
+{ ign: 'GOOMBA#ProP', pp: 1000, rank: 'd3', wl: 0, hp: 0 }
+
+2021-12-23 18:7:47
+-j
+{ ign: 'Ryen#Flex', pp: 1000, rank: 'p3', wl: 0, hp: 0 }
+149.1699999999999
+108.97000000000017
+73.21000000000004
+70.95000000000019
+10.489999999999963
+9.510000000000037
+9.089999999999964
+7.730000000000109
+7.729999999999928
+{ ign: 'Ryen#Flex', pp: 1000, rank: 'p3', wl: 0, hp: 0 }
+
+2021-12-23 18:34:58
+-j
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+
+2021-12-23 18:57:27
+-q
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+
+2021-12-23 18:57:32
+-l
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+
+2021-12-23 18:57:33
+-j
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+Saving...
+Saving...
+Sending
+Saving...
+null
+null
+null
+
+2021-12-23 19:9:29
+-l
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+
+2021-12-23 19:9:30
+-j
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+
+2021-12-23 19:9:37
+-lb
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+
+2021-12-23 19:12:3
+-j
+{ ign: 'LILphoenix#WOEM', pp: 1043, rank: 'imm3', wl: 2, hp: 4 }
+{ ign: 'LILphoenix#WOEM', pp: 1043, rank: 'imm3', wl: 2, hp: 4 }
+
+2021-12-23 19:12:9
+-q
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+
+2021-12-23 19:12:9
+-j
+{ ign: 'pinnow#NCAA', pp: 1072, rank: 'imm1', wl: -2, hp: 1004 }
+{ ign: 'pinnow#NCAA', pp: 1072, rank: 'imm1', wl: -2, hp: 1004 }
+
+2021-12-23 19:12:12
+-j
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+
+2021-12-23 19:12:14
+-j
+{
+  ign: 'AlonelyHentaiMan#TUYU',
+  pp: 907,
+  rank: 'imm2',
+  wl: -5,
+  hp: 1004
+}
+{
+  ign: 'AlonelyHentaiMan#TUYU',
+  pp: 907,
+  rank: 'imm2',
+  wl: -5,
+  hp: 1004
+}
+
+2021-12-23 19:12:17
+-j
+{ ign: 'morT#4428', pp: 1000, rank: 'g3', wl: 0, hp: 0 }
+{ ign: 'morT#4428', pp: 1000, rank: 'g3', wl: 0, hp: 0 }
+
+2021-12-23 19:12:18
+-J
+{ ign: 'Ronnoc#0001', pp: 1000, rank: 'imm3', wl: 0, hp: 0 }
+{ ign: 'Ronnoc#0001', pp: 1000, rank: 'imm3', wl: 0, hp: 0 }
+
+2021-12-23 19:12:22
+-j
+{ ign: 'Ronnoc#0001', pp: 1000, rank: 'imm3', wl: 0, hp: 0 }
+{ ign: 'Ronnoc#0001', pp: 1000, rank: 'imm3', wl: 0, hp: 0 }
+
+2021-12-23 19:12:28
+-j
+{
+  ign: 'ballsackscrathcer#balls',
+  pp: 1066,
+  rank: 'imm1',
+  wl: 3,
+  hp: 3
+}
+{
+  ign: 'ballsackscrathcer#balls',
+  pp: 1066,
+  rank: 'imm1',
+  wl: 3,
+  hp: 3
+}
+
+2021-12-23 19:12:43
+-q
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+
+2021-12-23 19:13:3
+-j
+{ ign: 'Ryen#Flex', pp: 1000, rank: 'p3', wl: 0, hp: 0 }
+{ ign: 'Ryen#Flex', pp: 1000, rank: 'p3', wl: 0, hp: 0 }
+
+2021-12-23 19:13:16
+-j
+{ ign: 'eros#999', pp: 1000, rank: 's1', wl: 0, hp: 0 }
+129.5499999999999
+51.76999999999998
+29.04999999999991
+27.65
+11.889999999999963
+10.089999999999964
+{ ign: 'eros#999', pp: 1000, rank: 's1', wl: 0, hp: 0 }
+Saving...
+Saving...
+Sending
+Saving...
+null
+null
+null
+
+2021-12-23 19:39:19
+-j
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+
+2021-12-23 19:39:35
+-j
+{ ign: 'eros#999', pp: 1000, rank: 's1', wl: 0, hp: 0 }
+{ ign: 'eros#999', pp: 1000, rank: 's1', wl: 0, hp: 0 }
+
+2021-12-23 19:39:42
+-j
+{ ign: 'Ronnoc#0001', pp: 1000, rank: 'imm3', wl: 0, hp: 0 }
+{ ign: 'Ronnoc#0001', pp: 1000, rank: 'imm3', wl: 0, hp: 0 }
+
+2021-12-23 19:39:43
+-j
+{ ign: 'morT#4428', pp: 1000, rank: 'g3', wl: 0, hp: 0 }
+{ ign: 'morT#4428', pp: 1000, rank: 'g3', wl: 0, hp: 0 }
+
+2021-12-23 19:40:22
+-j
+{ ign: 'Ryen#Flex', pp: 1000, rank: 'p3', wl: 0, hp: 0 }
+{ ign: 'Ryen#Flex', pp: 1000, rank: 'p3', wl: 0, hp: 0 }
+
+2021-12-23 19:40:30
+-q
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+
+2021-12-23 19:42:23
+-l
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+{ ign: 'アスナがかわいい#Trash', pp: 1000, rank: 'i2', wl: 1, hp: 1 }
+
+2021-12-23 19:44:34
+-lb
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+{ ign: 'saltynoww#pma', pp: 953, rank: 'imm1', wl: 2, hp: 2005 }
+
+2021-12-23 20:5:19
+-ds
+{ ign: 'NegNebulous#2960', pp: 1000, rank: 'imm1', wl: 0, hp: 0 }
+Sending
+Saving...
+{ ign: 'NegNebulous#2960', pp: 1000, rank: 'imm1', wl: 0, hp: 0 }
+null
+15
+1
