@@ -335,7 +335,8 @@ function getIdFromMsg(message) {
 client.on('guildMemberAdd', async member => {
     //console.log('h');
     try {
-        member.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'welcome').send(`Welcome to ${member.guild.name} <@${member.id}>\nTo join the customs type the following command in <#${member.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'register').id}> \`\`\`-register name#tag\`\`\``);
+        //message.channel.send({content: 'Hola', components: [row]});
+        member.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'welcome').send({content: `Welcome to ${member.guild.name} <@${member.id}>\nTo join the customs type follow the instructions below in <#${member.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'register').id}>`, embeds: [getEmbed('To register, run the following command where \"In Game Name#tag\" is your valorant user name and tag.\n```-register In Game Name#tag```\nFor example ``-register 100T Asuna#1111``', 'Register')]});
     }
     catch(e) {console.log(e);}
 });
@@ -362,6 +363,10 @@ client.on('interactionCreate', async interaction => {
             try {
                 pgNum = parseInt(args[3]) + 1;
                 startNum = pgNum*10;
+                //console.log(capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[startNum]].rank).split(' ')[0]));
+                if (userData[Object.keys(userData)[startNum]].ign == '') {
+                    userData.splice(Object.keys(userData)[startNum], 1);
+                }
                 finalMsg = `#${startNum+1} ${findEmoji(interaction.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[startNum]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[startNum]].ign}: ${userData[Object.keys(userData)[startNum]].pp}\n`;
                 //let lGap = (userData[Object.keys(userData)[0]].pp + '').length;
                 //console.log()
@@ -381,7 +386,8 @@ client.on('interactionCreate', async interaction => {
                     }
                 }
             }
-            catch {
+            catch(e) {
+                console.log(e);
                 pgNum -= 1;
                 finalMsg = interaction.message.embeds[0].description;
             }
@@ -390,6 +396,9 @@ client.on('interactionCreate', async interaction => {
             try {
                 pgNum = parseInt(args[3]) - 1;
                 startNum = pgNum*10;
+                if (userData[Object.keys(userData)[startNum]].ign == '') {
+                    userData.splice(Object.keys(userData)[startNum], 1);
+                }
                 finalMsg = `#${startNum+1} ${findEmoji(interaction.guild, capitalizeFirstLetter(rankToFull(userData[Object.keys(userData)[startNum]].rank).split(' ')[0]))} ${userData[Object.keys(userData)[startNum]].ign}: ${userData[Object.keys(userData)[startNum]].pp}\n`;
                 //let lGap = (userData[Object.keys(userData)[0]].pp + '').length;
                 //console.log()
@@ -462,8 +471,13 @@ client.on('interactionCreate', async interaction => {
                 .setLabel(`My page`)
                 .setStyle('SUCCESS'),
         ));
-
-        interaction.update({embeds: [getEmbed(finalMsg, interaction.message.embeds[0].title)], components: rowList});
+        let tempTitle = interaction.message.embeds[0].title.split(' ');
+        let temp = '';
+        for (var i = 0; i < tempTitle.length-1;i++) {
+            temp += tempTitle[i];
+        }
+        tempTitle = temp
+        interaction.update({embeds: [getEmbed(finalMsg, `${tempTitle} (${pgNum+1}/${parseInt(Object.keys(userData).length/10) + 1})`)], components: rowList});
 
         return;
     }
@@ -1315,7 +1329,7 @@ client.on('messageCreate', async (message) => {
                         .setStyle('SUCCESS'),
                 ));
 
-            message.reply({embeds: [getEmbed(finalMsg, 'Leader Board')], components: rowList});
+            message.reply({embeds: [getEmbed(finalMsg, `Leader Board (1/${parseInt(Object.keys(userData).length/10) + 1})`)], components: rowList});
         }
         else if (inputs[0] == 'help') {
             if (!inputs[1]) {
