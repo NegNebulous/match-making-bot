@@ -1,11 +1,12 @@
-console.log(process.version);
+console.log(`Node ${process.version}`);
 require('dotenv').config();
 
 const fs = require('fs');
 const path = require('path');
 const request = require('request');
 
-const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+const { Client, Intents, MessageEmbed, MessageActionRow, MessageButton, Permissions } = require('discord.js');
+console.log(`Discord v${require('discord.js').version}`);
 const { send } = require('process');
 const { get } = require('request');
 const { setEnvironmentData } = require('worker_threads');
@@ -46,6 +47,10 @@ var currentQueue = [];
 var currentMatches = [];
 //Embed color
 var formatedRGB = [0, 75, 255];
+//number of matches
+var totalMatches = 0;
+//name of voice channel category
+var categoryName = 'customs channels';
 
 //loads from path
 function loadData() {
@@ -308,6 +313,76 @@ var rankToRR = function(rankStr) {
     }
 }
 
+//converts rankstr to rr
+var rrToRank = function(rr) {
+    if (rr >= 2300){
+        return 'r'
+    }
+    else if (rr >= 2000){
+        return 'imm3'
+    }
+    else if (rr >= 1900){
+        return 'imm2'
+    }
+    else if (rr >= 1800){
+        return 'imm1'
+    }
+    else if (rr >= 1700){
+        return 'd3'
+    }
+    else if (rr >= 1600){
+        return 'd2'
+    }
+    else if (rr >= 1500){
+        return 'd1'
+    }
+    else if (rr >= 1400){
+        return 'p3'
+    }
+    else if (rr >= 1300){
+        return 'p2'
+    }
+    else if (rr >= 1200){
+        return 'p1'
+    }
+    else if (rr >= 1100){
+        return 'g3'
+    }
+    else if (rr >= 1000){
+        return 'g2'
+    }
+    else if (rr >= 900){
+        return 'g1'
+    }
+    else if (rr >= 800){
+        return 's3'
+    }
+    else if (rr >= 700){
+        return 's2'
+    }
+    else if (rr >= 600){
+        return 's1'
+    }
+    else if (rr >= 500){
+        return 'b3'
+    }
+    else if (rr >= 400){
+        return 'b2'
+    }
+    else if (rr >= 300){
+        return 'b1'
+    }
+    else if (rr >= 200){
+        return 'i3'
+    }
+    else if (rr >= 100){
+        return 'i2'
+    }
+    else{
+        return 'i1'
+    }
+}
+
 //converts <@DISCORD_ID> to DISCORD_ID
 function getIdFromMsg(message) {
     var tempIntI1 = 0;
@@ -332,11 +407,21 @@ function getIdFromMsg(message) {
     return message.substring(tempIntI1, tempIntI2);
 }
 
+client.on('guildMemberRemove', async member => {
+    try {    
+        var temp = currentQueue.indexOf(member.id);
+        if (temp != -1) {
+            currentQueue.splice(temp, 1);
+        }
+    }
+    catch(e){console.log(e);}
+});
+
 client.on('guildMemberAdd', async member => {
     //console.log('h');
     try {
         //message.channel.send({content: 'Hola', components: [row]});
-        member.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'welcome').send({content: `Welcome to ${member.guild.name} <@${member.id}>\nTo join the customs type follow the instructions below in <#${member.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'register').id}>`, embeds: [getEmbed('To register, run the following command where \"In Game Name#tag\" is your valorant user name and tag.\n```-register In Game Name#tag```\nFor example ``-register 100T Asuna#1111``', 'Register')]});
+        member.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'welcome').send({content: `Welcome to ${member.guild.name} <@${member.id}>\nTo join the customs follow the instructions below in <#${member.guild.channels.cache.find(channel => channel.name.toLowerCase() == 'register').id}>`, embeds: [getEmbed('To register, run the following command where \"In Game Name#tag\" is your valorant user name and tag.\n```-register In Game Name#tag```\nFor example ``-register 100T Asuna#1111``', 'Register')]});
     }
     catch(e) {console.log(e);}
 });
@@ -492,7 +577,7 @@ client.on('interactionCreate', async interaction => {
     
             for (var i = 0;i<currentMatches.length;i++) {
                 //[author, channel]
-                if ((currentMatches[i][2][0] == interaction.user.id) && (currentMatches[i][2][1] == interaction.message.channel.id)) {
+                if ((currentMatches[i][2].hostId == interaction.user.id) && (currentMatches[i][2].channelId == interaction.message.channel.id)) {
                     //console.log('user is host');
                     matchIndex = i;
                     isValid = true;
@@ -547,8 +632,7 @@ client.on('interactionCreate', async interaction => {
                 richEmbed.setTitle('Match');
     
                 var cMatch = currentMatches[matchIndex];
-                
-                finalMessage = 'Map: ' + cMatch[2][2];
+                finalMessage = `Host: ${userData[cMatch[2].hostId].ign}\n\nMap: ` + cMatch[2].map;
     
                 /*finalMessage += '\nTeam 1: ';
     
@@ -957,7 +1041,7 @@ client.on('messageCreate', async (message) => {
             var tempString2 = '';
             if (inputs[1]) {
                 if (userData[getIdFromMsg(inputs[1])]) {
-                    tempString2 += userData[getIdFromMsg(inputs[1])].ign + ' is ' + rankToFull(userData[getIdFromMsg(inputs[1])].rank) + ' and has ' + userData[getIdFromMsg(inputs[1])].pp + ' points. ';
+                    tempString2 += userData[getIdFromMsg(inputs[1])].ign + ' is ' + rankToFull(userData[getIdFromMsg(inputs[1])].rank) + ' and has ' + userData[getIdFromMsg(inputs[1])].pp + ` points.`;
                 }
                 else {
                     sendEmbed(message.channel, 'User has not registered.');
@@ -965,7 +1049,9 @@ client.on('messageCreate', async (message) => {
                 }
             }
             else {
-                tempString2 += userData[message.author.id].ign + ' is ' + rankToFull(userData[message.author.id].rank) + ' and has ' + userData[message.author.id].pp + ' points. ';
+                //findEmoji(message.guild, capitalizeFirstLetter(rankToFull(userData[message.author.id].pp).split(' ')[0]))
+                //findEmoji(message.guild, capitalizeFirstLetter(rankToFull(rrToRank(userData[message.author.id].pp)).split(' ')[0]))
+                tempString2 += userData[message.author.id].ign + ' is ' + rankToFull(userData[message.author.id].rank) + ' and has ' + userData[message.author.id].pp + ` points.`;
             }
 
             /*if (inputs[0] == 'pps') {
@@ -1000,6 +1086,7 @@ client.on('messageCreate', async (message) => {
 
             if (currIndex == -1) {
                 var pingBreak = '';
+                var hostOverride = '';
                 if ((message.author.id == '203206356402962432') && (inputs[1])) {
                     var testQueue = Object.keys(userData).slice(0, 10);
                     for (var i = 0;i<testQueue.length;i++) {
@@ -1007,6 +1094,7 @@ client.on('messageCreate', async (message) => {
                         sendEmbed(message.channel, userData[testQueue[i]].ign + ' has joined the queue: ' + currentQueue.length + '/10');
                     }
                     pingBreak = '...';
+                    hostOverride = '203206356402962432';
                     //console.log('1');
                 }
                 else {
@@ -1018,20 +1106,25 @@ client.on('messageCreate', async (message) => {
                     var preMessage = '';
 
                     var hostText = '';
-                    var hostIdList = [0];
+                    var matchInfo = new Object();
                     var highestElo = -1;
 
                     for (var i = 0;i<currentQueue.length;i++) {
                         if (userData[currentQueue[i]].hp > highestElo) {
                             hostText = userData[currentQueue[i]].ign;
                             highestElo = userData[currentQueue[i]].hp;
-                            hostIdList[0] = currentQueue[i];
+                            matchInfo.hostId = currentQueue[i];
                         }
                         preMessage += '<' + pingBreak + '@' + currentQueue[i] + '> ';
                     }
 
+                    if (hostOverride) {
+                        matchInfo.hostId = hostOverride;
+                        hostText = userData[hostOverride].ign;
+                    }
+
                     //hostText = userData['203206356402962432'].ign;
-                    //hostIdList[0] = '203206356402962432';
+                    //matchInfo.hostId = '203206356402962432';
 
                     //console.log('2');
                     var currMap = mapList[parseInt(Math.random()*mapList.length)];
@@ -1196,7 +1289,45 @@ client.on('messageCreate', async (message) => {
                         }
                     }*/
 
-                    //give roles
+                    //give roles channel permissions voice channel create channel create voice channel
+                    /*totalMatches += 1;
+                    message.guild.channels.create(`Match ${totalMatches} Team 1`, {
+                        type: 'GUILD_VOICE',
+                        parent: message.guild.channels.cache.find(channel => (channel.type == 'GUILD_CATEGORY' && channel.name.toLowerCase() == categoryName)),
+                        permissionOverwrites: [
+                            {
+                                id: message.guild.id,
+                                allow: [Permissions.FLAGS.VIEW_CHANNEL],
+                                deny: [Permissions.FLAGS.CONNECT],
+                            },
+                        ],
+                    }).then(team1voice => {
+                        console.log('t1');
+                        //console.log(team1voice.name);
+                        for (var i = 0; i < team1List.length; i++) {
+                            console.log(team1List[i]);
+                            team1voice.permissionOverwrites.edit(team1List[i], { CONNECT: true }).catch(console.log('.'));
+                        }
+                    });
+                    message.guild.channels.create(`Match ${totalMatches} Team 2`, {
+                        type: 'GUILD_VOICE',
+                        parent: message.guild.channels.cache.find(channel => (channel.type == 'GUILD_CATEGORY' && channel.name.toLowerCase() == categoryName)),
+                        permissionOverwrites: [
+                            {
+                                id: message.guild.id,
+                                allow: [Permissions.FLAGS.VIEW_CHANNEL],
+                                deny: [Permissions.FLAGS.CONNECT],
+                            },
+                        ],
+                    }).then(team2voice => {
+                        console.log('t2');
+                        //console.log(team2voice.name);
+                        for (var i = 0; i < team2List.length; i++) {
+                            console.log(team2List[i]);
+                            team2voice.permissionOverwrites.edit(team2List[i], { CONNECT: true }).catch(console.log('.'));
+                        }
+                    });*/
+
                     var team1vcRole = findRole(message.guild, 'team1vc');
                     var team2vcRole = findRole(message.guild, 'team2vc');
                     for (var i = 0;i < currentMatches[currentMatches.length - 1][0].length;i++) {
@@ -1258,10 +1389,12 @@ client.on('messageCreate', async (message) => {
                             .setStyle('DANGER'),
                     ));
 
-                    hostIdList.push(channel.id);
-                    hostIdList.push(currMap);
-                    currentMatches[currentMatches.length-1].push(hostIdList);
+                    matchInfo.channelId = channel.id;
+                    matchInfo.map = currMap;
+                    currentMatches[currentMatches.length-1].push(matchInfo);
                     currentQueue = [];
+
+                    console.log(currentMatches[currentMatches.length-1]);
 
                     channel.send({content: preMessage, embeds: [getEmbed(postMessage, 'Match')], components: rowList});
                     /*channel.send(preMessage).then(
@@ -1367,7 +1500,7 @@ client.on('messageCreate', async (message) => {
                     saveData((await message.channel.messages.fetch(inputs[1])).attachments.first().url).then(() => {
                         loadData();
                     });
-                    
+                    message.reply('Loaded from message');
                 }
             }
             else if (inputs[0] == 'addRole') {
