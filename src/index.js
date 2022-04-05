@@ -25,7 +25,7 @@ function bufferFile(filePath) {
 
 /* Variables */
 const PREFIX = '-';
-const ROOT_DIR = path.resolve(__dirname, '..')
+const ROOT_DIR = path.resolve(__dirname, '..');
 //user data
 var userDataPath;
 var userData;
@@ -56,6 +56,34 @@ var categoryName = 'customs channels';
 function loadData() {
     userData = JSON.parse(bufferFile(userDataPath));
     console.log(userData);
+}
+
+function losePoints(id) {
+    if (userData[id].wl > 0) {
+        userData[id].wl = -1;
+    }
+    else {
+        userData[id].wl -= 1;
+    }
+    var rrGain = 20 - userData[id].wl;
+    var finalMessage = ''
+    finalMessage += userData[id].ign + ': - ' + rrGain + ' = ' + (userData[id].pp - rrGain) + '\n';
+    userData[id].pp -= rrGain;
+    return finalMessage;
+}
+
+function gainPoints(id) {
+    if (userData[id].wl < 0) {
+        userData[id].wl = 1;
+    }
+    else {
+        userData[id].wl += 1;
+    }
+    var rrGain = 20 + userData[id].wl;
+    var finalMessage = '';
+    finalMessage += userData[id].ign + ': + ' + rrGain + ' = ' + (userData[id].pp + rrGain) + '\n';
+    userData[id].pp += rrGain;
+    return finalMessage;
 }
 
 //saves user data
@@ -655,7 +683,7 @@ client.on('interactionCreate', async interaction => {
                     console.log(cMatch);
 
                     for (var i = 0;i < cMatch[0].length; i++) {
-                        if (userData[cMatch[0][i]].wl < 0) {
+                        /*if (userData[cMatch[0][i]].wl < 0) {
                             userData[cMatch[0][i]].wl = 1;
                         }
                         else {
@@ -663,12 +691,13 @@ client.on('interactionCreate', async interaction => {
                         }
                         var rrGain = 20 + userData[cMatch[0][i]].wl;
                         finalMessage += userData[cMatch[0][i]].ign + ': + ' + rrGain + ' = ' + (userData[cMatch[0][i]].pp + rrGain) + '\n';
-                        userData[cMatch[0][i]].pp += rrGain;
+                        userData[cMatch[0][i]].pp += rrGain;*/
+                        finalMessage += gainPoints(cMatch[0][i]);
                     }
     
                     finalMessage += '\nTeam 2:\n';
                     for (var i = 0;i < cMatch[1].length; i++) {
-                        if (userData[cMatch[1][i]].wl > 0) {
+                        /*if (userData[cMatch[1][i]].wl > 0) {
                             userData[cMatch[1][i]].wl = -1;
                         }
                         else {
@@ -676,7 +705,8 @@ client.on('interactionCreate', async interaction => {
                         }
                         var rrGain = 20 - userData[cMatch[1][i]].wl;
                         finalMessage += userData[cMatch[1][i]].ign + ': - ' + rrGain + ' = ' + (userData[cMatch[1][i]].pp - rrGain) + '\n';
-                        userData[cMatch[1][i]].pp -= rrGain;
+                        userData[cMatch[1][i]].pp -= rrGain;*/
+                        finalMessage += losePoints(cMatch[1][i]);
                     }
                 }
                 else if (args[1] == '2') {
@@ -684,7 +714,7 @@ client.on('interactionCreate', async interaction => {
                     finalMessage += '\n\nWinner: Team 2\n\nTeam 1:\n';
     
                     for (var i = 0;i < cMatch[0].length; i++) {
-                        if (userData[cMatch[0][i]].wl > 0) {
+                        /*if (userData[cMatch[0][i]].wl > 0) {
                             userData[cMatch[0][i]].wl = -1;
                         }
                         else {
@@ -692,12 +722,13 @@ client.on('interactionCreate', async interaction => {
                         }
                         var rrGain = 20 - userData[cMatch[0][i]].wl;
                         finalMessage += userData[cMatch[0][i]].ign + ': - ' + rrGain + ' = ' + (userData[cMatch[0][i]].pp - rrGain) + '\n';
-                        userData[cMatch[0][i]].pp -= rrGain;
+                        userData[cMatch[0][i]].pp -= rrGain;*/
+                        finalMessage += losePoints(cMatch[0][i]);
                     }
     
                     finalMessage += '\nTeam 2:\n';
                     for (var i = 0;i < cMatch[1].length; i++) {
-                        if (userData[cMatch[1][i]].wl < 0) {
+                        /*if (userData[cMatch[1][i]].wl < 0) {
                             userData[cMatch[1][i]].wl = 1;
                         }
                         else {
@@ -705,7 +736,8 @@ client.on('interactionCreate', async interaction => {
                         }
                         var rrGain = 20 + userData[cMatch[1][i]].wl;
                         finalMessage += userData[cMatch[1][i]].ign + ': + ' + rrGain + ' = ' + (userData[cMatch[1][i]].pp + rrGain) + '\n';
-                        userData[cMatch[1][i]].pp += rrGain;
+                        userData[cMatch[1][i]].pp += rrGain;*/
+                        finalMessage += gainPoints(cMatch[1][i]);
                     }
                 }
     
@@ -1599,6 +1631,12 @@ client.on('messageCreate', async (message) => {
                 }
                 currentQueue.splice(currentQueue.indexOf(getIdFromMsg(inputs[1])), 1);
                 message.channel.send(`Removed ${userData[getIdFromMsg(inputs[1])].ign} from queue`);
+            }
+            else if (inputs[0] == 'ww') {
+                message.reply(gainPoints(getIdFromMsg(inputs[1])));
+            }
+            else if (inputs[0] == 'll') {
+                message.reply(losePoints(getIdFromMsg(inputs[1])));
             }
             else if (inputs[0] == 'hhelp') {
                 var msgsend = '';
